@@ -1,11 +1,17 @@
-import React from "react";
+import { useState } from "react";
 import "./App.css";
+import Player from "./components/GameBoard/Player/player.jsx";
 import GameBoard from "./components/GameBoard/GameBoard";
 
-const App = () => {
+function App() {
+  const [players, setPlayers] = useState(null);
   return (
     <>
-      <GameBoard />
+      {!players ? (
+        <Player onStart={setPlayers} />
+      ) : (
+        <GameBoard players={players} onReset={() => setPlayers(null)} />
+      )}
     </>
   );
 };

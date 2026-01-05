@@ -4,8 +4,9 @@ import "./GameBoard.css";
 import Circle from "./Circle/Circle";
 import ScoreBoard from "./scoreBoard/scoreBoard";
 import Paths from "./Path/path";
+import WinBox from "./WinBox/WinBox";
 
-function GameBoard() {
+function GameBoard({ players, onReset }) {
   const [circles, setCircles] = useState([
     {
       id: "C1",
@@ -44,8 +45,12 @@ function GameBoard() {
     }
   ]);
 
+  // Winner State
+  const [winner, setWinner] = useState(null);
+
   const [selectedCircleId, setSelectedCircleId] = useState(null);
   const [currentPlayer, setCurrentPlayer] = useState("P1");
+
 
   function handleCircleClick(circle) {
     // SELECT kukari
@@ -88,6 +93,9 @@ function GameBoard() {
 
   
   useEffect(() => {
+
+    if (winner) return;  // STOP TIMER IF GAME OVER
+
     if (timeLeft === 0) {
       handleFault();
       return;
@@ -98,7 +106,7 @@ function GameBoard() {
     }, 1000);
 
     return () => clearTimeout(timer);
-  }, [timeLeft, currentPlayer]);
+  }, [timeLeft, currentPlayer, winner]);
 
   // Store Faults
   const [faults, setFaults] = useState({
@@ -114,9 +122,15 @@ function GameBoard() {
 
       // 🔴 SECOND FAULT = LOSS
       if (updated[currentPlayer] === 2) {
-        const winner = currentPlayer === "P1" ? "P2" : "P1";
+        const winnerPlayer = currentPlayer === "P1" ? "P2" : "P1";
+
+        setWinner({
+          name: players[winnerPlayer],
+          reason: `${players[currentPlayer]} got 2 faults`
+        });
+
         // alert(`${winner} wins! 🎉 (${currentPlayer} got 2 faults)`);
-        resetGame()
+        // resetGame()
         return updated;
       }
 
@@ -133,8 +147,13 @@ function GameBoard() {
   // Reset Turn
   function resetTurn(nextPlayer) {
     if (!hasValidMove(nextPlayer)) {
-      // alert(`${currentPlayer} wins! 🎉 (Opponent has no valid move)`);
-      resetGame()
+      const winnerPlayer = nextPlayer === "P1" ? "P2" : "P1";
+
+        setWinner({
+          name: players[winnerPlayer],
+          reason: `${players[nextPlayer]} has no valid move`
+        });
+
       return;
     }
     setSelectedCircleId(null);
@@ -156,6 +175,20 @@ function GameBoard() {
       return false;
     });
   }
+  
+//   winner = {
+//   name: "Darvin",
+//   reason: "Opponent got 2 faults"
+// }
+
+function playagain() {
+    setCircles(circles);
+    setSelectedCircleId(null);
+    setCurrentPlayer("P1");
+    setFaults({ P1: 0, P2: 0 });
+    setTimeLeft(5);
+    setWinner(null);  
+  }
 
   // Reset Game
   function resetGame() {
@@ -164,6 +197,9 @@ function GameBoard() {
     setCurrentPlayer("P1");
     setFaults({ P1: 0, P2: 0 });
     setTimeLeft(5);
+    setWinner(null);
+    
+    onReset(); // 👈 send control back to Player.jsx  
   }
 
   return (
@@ -171,6 +207,7 @@ function GameBoard() {
 
       <ScoreBoard 
         currentPlayer={currentPlayer} 
+        players={players}
         faults={faults} 
         timeLeft={timeLeft} 
         />
@@ -199,6 +236,15 @@ function GameBoard() {
           );
         })}
       </div>
+      {/* ✅ WIN BOX RENDER HERE */}
+        {winner && (
+          <WinBox
+            winnerName={winner.name}
+            reason={winner.reason}
+            onPlayagain={playagain}
+            onRestart={resetGame}
+          />
+        )}
     </div>
   );
 }

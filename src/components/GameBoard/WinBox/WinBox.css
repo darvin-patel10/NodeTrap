@@ -1,0 +1,76 @@
+/* Full screen dark overlay */
+.win-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(6px);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+/* Winner box */
+.win-box {
+  background: linear-gradient(145deg, #111, #1b1b1b);
+  padding: 30px 40px;
+  border-radius: 16px;
+  text-align: center;
+  color: white;
+  width: 320px;
+
+  animation: popIn 0.4s ease;
+  box-shadow: 0 0 30px rgba(0, 255, 213, 0.4);
+}
+
+/* Title */
+.win-box h2 {
+  color: #00ffd5;
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+}
+
+/* Winner name */
+.winner-name {
+  font-size: 32px;
+  margin: 10px 0;
+  color: gold;
+  text-shadow: 0 0 15px gold;
+}
+
+/* Reason text */
+.win-reason {
+  font-size: 14px;
+  opacity: 0.8;
+  margin-bottom: 20px;
+}
+
+/* Restart button */
+.win-box button {
+  margin: 8px;  
+  padding: 10px 30px;
+  background: linear-gradient(135deg, #00ffd5, #00bfa6);
+  border: none;
+  border-radius: 30px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.win-box button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px #00ffd5;
+}
+
+/* Animation */
+@keyframes popIn {
+  from {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
