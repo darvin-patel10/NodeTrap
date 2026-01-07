@@ -1,5 +1,7 @@
-import { useState } from "react";
-import { useEffect } from "react";
+// import { useRef } from "react";
+import { useState, useEffect, useRef } from "react";
+// import { useState } from "react";
+// import { useEffect } from "react"; 
 import "./GameBoard.css";
 import Circle from "./Circle/Circle";
 import ScoreBoard from "./scoreBoard/scoreBoard";
@@ -7,6 +9,9 @@ import Paths from "./Path/path";
 import WinBox from "./WinBox/WinBox";
 
 function GameBoard({ players, onReset }) {
+
+  const gameOverRef = useRef(false); // 🔒 HARD GAME LOCK
+
   const [circles, setCircles] = useState([
     {
       id: "C1",
@@ -53,7 +58,10 @@ function GameBoard({ players, onReset }) {
 
 
   function handleCircleClick(circle) {
-    // SELECT kukari
+
+    // 🛑 ABSOLUTE STOP
+    if (gameOverRef.current) return;
+    
     // STEP 1: SELECT (allow switching between own pieces)
     if (circle.occupiedBy === currentPlayer) {
       setSelectedCircleId(circle.id);
@@ -65,23 +73,36 @@ function GameBoard({ players, onReset }) {
     if (selectedCircleId && circle.occupiedBy === null) {
       const fromCircle = circles.find(c => c.id === selectedCircleId);
 
-      // RULE: Must be directly connected
       if (!fromCircle.connections.includes(circle.id)) {
-        // alert("Invalid move! Follow the path.");
         return;
       }
 
-      setCircles(prev =>
-        prev.map(c => {
-          if (c.id === selectedCircleId) {
-            return { ...c, occupiedBy: null };
-          }
-          if (c.id === circle.id) {
-            return { ...c, occupiedBy: currentPlayer };
-          }
-          return c;
-        })
-      );
+      const updatedCircles = circles.map(c => {
+        if (c.id === selectedCircleId) {
+          return { ...c, occupiedBy: null };
+        }
+        if (c.id === circle.id) {
+          return { ...c, occupiedBy: currentPlayer };
+        }
+        return c;
+      });
+
+      // ✅ update state
+      setCircles(updatedCircles);
+
+      // STEP 3: CHECK WIN CONDITION
+      const nextPlayer = currentPlayer === "P1" ? "P2" : "P1";
+
+      const hasValid = hasValidMove(nextPlayer, updatedCircles);
+
+      if (!hasValid) {
+        gameOverRef.current = true;
+        setWinner({
+          name: players[currentPlayer],
+          reason: `${players[nextPlayer]} has no valid move`
+        });
+        return;
+      } 
 
       // Reset selection and switch turn
       resetTurn(currentPlayer === "P1" ? "P2" : "P1");
@@ -94,8 +115,6 @@ function GameBoard({ players, onReset }) {
   
   useEffect(() => {
 
-    if (winner) return;  // STOP TIMER IF GAME OVER
-
     if (timeLeft === 0) {
       handleFault();
       return;
@@ -106,7 +125,7 @@ function GameBoard({ players, onReset }) {
     }, 1000);
 
     return () => clearTimeout(timer);
-  }, [timeLeft, currentPlayer, winner]);
+  }, [timeLeft, currentPlayer]);
 
   // Store Faults
   const [faults, setFaults] = useState({
@@ -116,6 +135,10 @@ function GameBoard({ players, onReset }) {
 
   // Handle Faults
   function handleFault() {
+
+    // 🛑 If game already over, do nothing
+    if (gameOverRef.current) return;
+
     setFaults(prev => {
       const updated = { ...prev };
       updated[currentPlayer] += 1;
@@ -128,34 +151,25 @@ function GameBoard({ players, onReset }) {
           name: players[winnerPlayer],
           reason: `${players[currentPlayer]} got 2 faults`
         });
+        gameOverRef.current = true;
 
-        // alert(`${winner} wins! 🎉 (${currentPlayer} got 2 faults)`);
-        // resetGame()
-        return updated;
       }
 
-      // 🟡 FIRST FAULT = TURN LOST
-      // alert(`${currentPlayer} fault! Turn lost.`);
       return updated;
     });
 
-    // Switch turn AFTER fault
-    resetTurn(currentPlayer === "P1" ? "P2" : "P1");
-    
+    // 🟢 ONLY switch turn if game NOT over
+    if (!gameOverRef.current) {
+      resetTurn(currentPlayer === "P1" ? "P2" : "P1");
+    }
   }
 
   // Reset Turn
   function resetTurn(nextPlayer) {
-    if (!hasValidMove(nextPlayer)) {
-      const winnerPlayer = nextPlayer === "P1" ? "P2" : "P1";
 
-        setWinner({
-          name: players[winnerPlayer],
-          reason: `${players[nextPlayer]} has no valid move`
-        });
+    // 🛑 ABSOLUTE STOP
+    if (gameOverRef.current) return;
 
-      return;
-    }
     setSelectedCircleId(null);
     setCurrentPlayer(nextPlayer);
     setTimeLeft(5);
@@ -163,25 +177,20 @@ function GameBoard({ players, onReset }) {
 
   // Check for valid moves for each Next-player
 
-  function hasValidMove(player) {
-    return circles.some(circle => {
+  function hasValidMove(player, board = circles) {
+    return board.some(circle => {
       if (circle.occupiedBy === player) {
         return circle.connections.some(connId => {
-          const target = circles.find(c => c.id === connId);
-          
+          const target = board.find(c => c.id === connId);
           return target.occupiedBy === null;
         });
       }
       return false;
     });
   }
-  
-//   winner = {
-//   name: "Darvin",
-//   reason: "Opponent got 2 faults"
-// }
 
-function playagain() {
+  function playagain() {
+    gameOverRef.current = false; // 🔓 UNLOCK GAME
     setCircles(circles);
     setSelectedCircleId(null);
     setCurrentPlayer("P1");
@@ -192,6 +201,7 @@ function playagain() {
 
   // Reset Game
   function resetGame() {
+    gameOverRef.current = false; // 🔓 UNLOCK GAME
     setCircles(circles);
     setSelectedCircleId(null);
     setCurrentPlayer("P1");
