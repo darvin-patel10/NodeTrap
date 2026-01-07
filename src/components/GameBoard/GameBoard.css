@@ -14,23 +14,6 @@
 
 /* -----------------------Game Board --------------------------- */
 
-/* .game-board {
-  position: relative;
-
-  width: min(90vw, 600px);
-  aspect-ratio: 1 / 1;
-
-  background:
-    radial-gradient(circle at center, #020617, #000);
-  border-radius: 18px;
-
-  box-shadow:
-    0 0 30px rgba(59,130,246,.4),
-    inset 0 0 25px rgba(0,0,0,.9);
-
-  animation: boardFade 0.6s ease;
-} */
-
 .game-board {
   position: relative;
   width: min(90vw, 550px);

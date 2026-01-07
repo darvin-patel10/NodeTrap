@@ -1,7 +1,4 @@
-// import { useRef } from "react";
 import { useState, useEffect, useRef } from "react";
-// import { useState } from "react";
-// import { useEffect } from "react"; 
 import "./GameBoard.css";
 import Circle from "./Circle/Circle";
 import ScoreBoard from "./scoreBoard/scoreBoard";
@@ -17,14 +14,14 @@ function GameBoard({ players, onReset }) {
       id: "C1",
       top: 3,
       left: 46,
-      occupiedBy: "P1",
+      occupiedBy: null,
       connections: ["C3", "C4"]
     },
     {
       id: "C2",
       top: 46,
       left: 3,
-      occupiedBy: "P1",
+      occupiedBy: null,
       connections: ["C3", "C5"]
     },
     {
@@ -38,20 +35,27 @@ function GameBoard({ players, onReset }) {
       id: "C4",
       top: 46,
       left: 87,
-      occupiedBy: "P2",
+      occupiedBy: null,
       connections: ["C1", "C3", "C5"]
     },
     {
       id: "C5",
       top: 87,
       left: 46,
-      occupiedBy: "P2",
+      occupiedBy: null,
       connections: ["C2", "C3", "C4"]
     }
   ]);
 
   // Winner State
   const [winner, setWinner] = useState(null);
+
+  const [placedCount, setPlacedCount] = useState({
+    P1: 0,
+    P2: 0
+  });
+  const isPlacementPhase = placedCount.P1 < 2 || placedCount.P2 < 2;
+
 
   const [selectedCircleId, setSelectedCircleId] = useState(null);
   const [currentPlayer, setCurrentPlayer] = useState("P1");
@@ -62,12 +66,65 @@ function GameBoard({ players, onReset }) {
     // 🛑 ABSOLUTE STOP
     if (gameOverRef.current) return;
     
+    const isPlacementPhase =placedCount.P1 < 2 || placedCount.P2 < 2;
+
+    // 🟢 PLACEMENT PHASE
+    if (isPlacementPhase) {
+      // Only place on empty circle
+      if (circle.occupiedBy !== null) return;
+
+      // Player already placed 2 pieces
+      if (placedCount[currentPlayer] >= 2) return;
+
+      // Place piece
+      const updatedCircles = circles.map(c =>
+        c.id === circle.id? { ...c, occupiedBy: currentPlayer }: c
+      );
+
+      setCircles(updatedCircles);
+
+      setPlacedCount(prev => ({
+        ...prev,
+        [currentPlayer]: prev[currentPlayer] + 1
+      }));
+
+      // After placement
+      const nextPlayer = currentPlayer === "P1" ? "P2" : "P1";
+
+      // ✅ CHECK IF PLACEMENT JUST FINISHED
+      const placementFinished =
+      placedCount.P1 + (currentPlayer === "P1" ? 1 : 0) === 2 &&
+      placedCount.P2 + (currentPlayer === "P2" ? 1 : 0) === 2;
+
+      if (placementFinished) { 
+        // 🔥 FIRST MOVE VALIDITY CHECK (ONLY ONCE)
+        const hasValid = hasValidMove("P1", updatedCircles);
+
+        if (!hasValid) {
+          gameOverRef.current = true;
+          setWinner({
+            name: players["P2"],
+            reason: `${players["P1"]} has no valid move`
+          });
+          return;
+        }
+
+        // Placement done → P1 starts movement
+        resetTurn("P1");
+        return;
+      }
+
+        // // Switch turn
+        resetTurn(nextPlayer);
+        return;
+    }
+
+
     // STEP 1: SELECT (allow switching between own pieces)
     if (circle.occupiedBy === currentPlayer) {
       setSelectedCircleId(circle.id);
       return;
     }
-
 
     // STEP 2: MOVE kukari
     if (selectedCircleId && circle.occupiedBy === null) {
@@ -178,6 +235,7 @@ function GameBoard({ players, onReset }) {
   // Check for valid moves for each Next-player
 
   function hasValidMove(player, board = circles) {
+    
     return board.some(circle => {
       if (circle.occupiedBy === player) {
         return circle.connections.some(connId => {
@@ -219,9 +277,10 @@ function GameBoard({ players, onReset }) {
         currentPlayer={currentPlayer} 
         players={players}
         faults={faults} 
-        timeLeft={timeLeft} 
+        timeLeft={timeLeft}
+        placedCount={placedCount} 
         />
-
+        
       <div className="game-board">
 
         {/* SVG Paths */}
