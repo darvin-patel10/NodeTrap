@@ -19,23 +19,30 @@ function Player({ onStart }) {
 
   return (
     <div className="player-screen">
-      <h2>Enter Player Names</h2>
+      <div className="game-header">
+        <img src="/public/logo.png" alt="NodeTrap Logo" className="logo" />
+        <h1 className="game-title">NodeTrap</h1>
+      </div>
 
-      <input
-        type="text"
-        placeholder="Player 1 Name"
-        value={player1}
-        onChange={(e) => setPlayer1(e.target.value)}
-      />
+      <div className="player-card">
+          <h2>Enter Player Names</h2>
 
-      <input
-        type="text"
-        placeholder="Player 2 Name"
-        value={player2}
-        onChange={(e) => setPlayer2(e.target.value)}
-      />
+          <input
+            type="text"
+            placeholder="Player 1 Name"
+            value={player1}
+            onChange={(e) => setPlayer1(e.target.value)}
+          />
 
-      <button onClick={handleStart}>Start Game</button>
+          <input
+            type="text"
+            placeholder="Player 2 Name"
+            value={player2}
+            onChange={(e) => setPlayer2(e.target.value)}
+          />
+
+          <button onClick={handleStart}>Start Game</button>
+        </div>
     </div>
   );
 }

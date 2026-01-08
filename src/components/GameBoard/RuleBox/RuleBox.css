@@ -1,0 +1,140 @@
+/* Full screen overlay (same vibe as player screen) */
+.rule-overlay {
+  min-height: 100vh;
+  width: 100%;
+  /* position: fixed; */
+  inset: 0;
+
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  background: radial-gradient(circle at top, #0f2027, #0f172ad9, #000);
+  font-family: "Poppins", sans-serif;
+  z-index: 1000;
+}
+
+/* Header container */
+.rule-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 18px;
+  text-align: center;
+}
+
+/* Logo */
+.rule-logo {
+  width: 130px;
+  margin-bottom: 8px;
+
+  filter: drop-shadow(0 0 12px rgba(0, 255, 213, 0.7));
+  animation: logoGlow 2.2s ease-in-out infinite alternate;
+}
+
+/* Game title */
+.rule-title {
+  font-size: 36px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  margin: 0;
+
+  color: #ffffff;
+  text-shadow:
+    0 0 6px #38bdf8,
+    0 0 18px rgba(56, 189, 248, 0.85);
+}
+
+/* Subtitle */
+.rule-subtitle {
+  margin-top: 4px;
+  font-size: 14px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+
+  color: #00ffd5;
+  opacity: 0.85;
+}
+
+
+/* Rule box container */
+.rule-box {
+  background: #111;
+  border: 2px solid #333;
+  border-radius: 16px;
+
+  padding: 22px 26px;
+  margin-bottom: 10px;
+  width: 90%;
+  max-width: 420px;
+
+  color: #ffffff;
+  box-shadow: 0 0 20px rgba(0, 255, 213, 0.25);
+  
+}
+
+/* Title */
+.rule-box h2 {
+  text-align: center;
+  font-size: 26px;
+  margin-bottom: 16px;
+
+  letter-spacing: 2px;
+  color: #00ffd5;
+  text-shadow: 0 0 10px #00ffd5;
+}
+
+/* Rule list */
+.rule-box ul {
+  padding-left: 18px;
+  margin-bottom: 22px;
+}
+
+.rule-box ul li {
+  margin-bottom: 10px;
+  font-size: 15px;
+  color: #e5e7eb;
+}
+
+/* Start button (copied behavior from Player button) */
+.rule-box button {
+  width: 100%;
+  padding: 12px;
+
+  background: linear-gradient(135deg, #00ffd5, #00bfa6);
+  border: none;
+  border-radius: 30px;
+
+  font-size: 16px;
+  font-weight: bold;
+  color: #000;
+
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* Hover effect */
+.rule-box button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px #00ffd5;
+}
+
+/* Active click */
+.rule-box button:active {
+  transform: scale(0.95);
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .rule-box{
+    padding: 18px 15px;
+  }
+  .rule-box h2 {
+    font-size: 22px;
+  }
+
+  .rule-box ul li {
+    font-size: 14px;
+  }
+}
