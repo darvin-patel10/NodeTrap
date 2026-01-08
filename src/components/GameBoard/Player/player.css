@@ -123,7 +123,6 @@
   transform: scale(0.95);
 }
 
-
 /* Subtle logo glow animation */
 @keyframes logoGlow {
   from {
@@ -133,8 +132,6 @@
     filter: drop-shadow(0 0 18px rgba(0, 255, 213, 1));
   }
 }
-
-
 
 /* Responsive */
 @media (max-width: 480px) {

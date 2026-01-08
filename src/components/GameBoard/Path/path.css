@@ -26,15 +26,6 @@
   animation: piecePop 0.3s ease;
 }
 
-@keyframes piecePop {
-  from {
-    transform: scale(0);
-  }
-  to {
-    transform: scale(1);
-  }
-}
-
 .P1 {
   background: radial-gradient(circle, #ff4d4f, #7f1d1d);
   box-shadow: 0 0 18px rgba(239, 68, 68, 0.9);
@@ -44,3 +35,14 @@
   background: radial-gradient(circle, #3b82f6, #1e3a8a);
   box-shadow: 0 0 18px rgba(59, 130, 246, 0.9);
 }
+
+@keyframes piecePop {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+

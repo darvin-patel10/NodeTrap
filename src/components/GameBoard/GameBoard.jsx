@@ -9,7 +9,7 @@ function GameBoard({ players, onReset }) {
 
   const gameOverRef = useRef(false); // 🔒 HARD GAME LOCK
 
-  const [circles, setCircles] = useState([
+  const INITIAL_CIRCLES = [
     {
       id: "C1",
       top: 3,
@@ -45,7 +45,9 @@ function GameBoard({ players, onReset }) {
       occupiedBy: null,
       connections: ["C2", "C3", "C4"]
     }
-  ]);
+  ];
+
+  const [circles, setCircles] = useState(INITIAL_CIRCLES);
 
   // Winner State
   const [winner, setWinner] = useState(null);
@@ -54,8 +56,6 @@ function GameBoard({ players, onReset }) {
     P1: 0,
     P2: 0
   });
-  const isPlacementPhase = placedCount.P1 < 2 || placedCount.P2 < 2;
-
 
   const [selectedCircleId, setSelectedCircleId] = useState(null);
   const [currentPlayer, setCurrentPlayer] = useState("P1");
@@ -168,7 +168,6 @@ function GameBoard({ players, onReset }) {
 
   // Timmer
   const [timeLeft, setTimeLeft] = useState(5);
-
   
   useEffect(() => {
 
@@ -249,7 +248,7 @@ function GameBoard({ players, onReset }) {
 
   function playagain() {
     gameOverRef.current = false; // 🔓 UNLOCK GAME
-    setCircles(circles);
+    setCircles(INITIAL_CIRCLES.map(c => ({ ...c })));
     setSelectedCircleId(null);
     setCurrentPlayer("P1");
     setFaults({ P1: 0, P2: 0 });
@@ -260,7 +259,7 @@ function GameBoard({ players, onReset }) {
   // Reset Game
   function resetGame() {
     gameOverRef.current = false; // 🔓 UNLOCK GAME
-    setCircles(circles);
+    setCircles(INITIAL_CIRCLES.map(c => ({ ...c })));
     setSelectedCircleId(null);
     setCurrentPlayer("P1");
     setFaults({ P1: 0, P2: 0 });
