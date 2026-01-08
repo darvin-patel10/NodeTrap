@@ -20,7 +20,7 @@ function Player({ onStart }) {
   return (
     <div className="player-screen">
       <div className="game-header">
-        <img src="/public/logo.png" alt="NodeTrap Logo" className="logo" />
+        <img src="/logo.png" alt="NodeTrap Logo" className="logo" />
         <h1 className="game-title">NodeTrap</h1>
       </div>
 
