@@ -1,16 +1,33 @@
-# React + Vite
+#NodeTrep#
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Live Demo: https://nodetrep.netlify.app/
 
-Currently, two official plugins are available:
+About the Game
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+-> Two-player turn-based gameplay
+-> Time-bound turns (5 seconds per move)
+-> Fault system for missed turns
+-> Strategy-driven win conditions
+-> Smooth SVG-based board interactions
+-> Fully responsive UI
 
-## React Compiler
+Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+-> Frontend: React.js, JavaScript, HTML, CSS
+-> Graphics: SVG (custom paths & board design)
+-> State Management: React Hooks
 
-## Expanding the ESLint configuration
+Game Flow
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+-> Each player has two nodes (pieces)
+-> Players get 5 seconds per turn
+-> Missing a turn counts as a fault
+-> Initially, players must place both nodes on the board
+-> After placement, only one node can be moved per turn
+-> Movement is allowed only to the exact next empty position
+-> A valid path must exist between the current and next position
+
+Game Over Conditions
+
+-> If a player has no valid move available, they lose the game
+-> If a player receives 2 faults, they lose the game
