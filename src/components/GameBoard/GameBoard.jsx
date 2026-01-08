@@ -248,18 +248,21 @@ function GameBoard({ players, onReset }) {
 
   function playagain() {
     gameOverRef.current = false; // 🔓 UNLOCK GAME
-    setCircles(INITIAL_CIRCLES.map(c => ({ ...c })));
+    setCircles(INITIAL_CIRCLES);
+    setPlacedCount({ P1: 0, P2: 0 });
     setSelectedCircleId(null);
     setCurrentPlayer("P1");
     setFaults({ P1: 0, P2: 0 });
     setTimeLeft(5);
-    setWinner(null);  
+    setWinner(null);
+      
   }
 
   // Reset Game
   function resetGame() {
     gameOverRef.current = false; // 🔓 UNLOCK GAME
-    setCircles(INITIAL_CIRCLES.map(c => ({ ...c })));
+    setCircles(INITIAL_CIRCLES);
+    setPlacedCount({ P1: 0, P2: 0 });
     setSelectedCircleId(null);
     setCurrentPlayer("P1");
     setFaults({ P1: 0, P2: 0 });
